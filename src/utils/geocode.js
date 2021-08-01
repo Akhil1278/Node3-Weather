@@ -20,4 +20,10 @@ const geocode = (address,callback) =>{
     })
 }
 
+// geocode('boston',((error,data)=>{
+//         console.log(error)
+//         console.log(data)
+// })
+// )
+
 module.exports = geocode

@@ -2,11 +2,11 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const request = require('request')
-const geocode = require('../utils/geocode.js')
-const forecast = require('../utils/forecast.js')
+const geocode = require('./utils/geocode.js')
+const forecast = require('./utils/forecast.js')
 
 const app = express()
-
+const port = process.env.PORT || 3000
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
@@ -49,22 +49,25 @@ app.get('/weather', (req, res) => {
         })
     }
     else{
-
-        geocode(req.query.address,(error,{latitude,longitude})=>{
+        geocode(req.query.address,(error,{latitude,longitude}={})=>{
             if(error){
-                res.send('Could not find the location')
+              return  res.send({
+                  ERROR : 'Could not find the location'})
             }
             else{
                 forecast(latitude,longitude, (error, data) => {
                     if(error){
-                        res.send('Could not get the forecast of location')
+                        res.send({
+                            ERROR : 'Could not get the forecast of location'})
                     
                     }
                     else{
                         res.send(
                             {
-                              Forecast : data.weather_descriptions,
-                              Location : data.location,
+                              Forecast : data.current.weather_descriptions,
+                              Location : data.location.name,
+                              Region : data.location.region,
+                              Country : data.location.country,
                               Address : req.query.address
                             })
                     }
@@ -104,6 +107,6 @@ app.get('*', (req, res) => {
     })
 })
 
-app.listen(3000, () => {
-    console.log('Server is up on port 3000.')
+app.listen(port, () => {
+    console.log('Server is up on port',port)
 })

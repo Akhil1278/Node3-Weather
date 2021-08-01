@@ -8,11 +8,12 @@ const forecast = (lat,long,callback) =>{
         }
         else if(response.body.error){
             callback('Could not found the location',undefined)
-        }
+        }   
         else{
-            callback(undefined,response.body.current)
+            callback(undefined,response.body)
         }
     })
 }
+
 
 module.exports = forecast
